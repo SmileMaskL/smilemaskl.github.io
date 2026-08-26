@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>연봉 실수령액 계산기 - 2026년 4대보험/세금 반영</title>
+<meta name="description" content="연봉을 입력하면 국민연금, 건강보험, 고용보험, 소득세를 제외한 월 실수령액을 바로 계산해드립니다." />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="index.html">계산기모음</a>
+    <nav>
+      <a href="index.html">홈</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>연봉 실수령액 계산기</h1>
+    <p>4대보험료와 소득세를 제외한 월 실수령액을 계산합니다</p>
+  </section>
+
+  <div class="card">
+    <form id="calcForm">
+      <div class="field">
+        <label for="salary">연봉 (세전, 만원 단위)</label>
+        <div class="input-wrap">
+          <input type="text" id="salary" inputmode="numeric" placeholder="예: 4,000" required />
+          <span class="suffix">만원</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="dependents">부양가족 수 (본인 포함)</label>
+        <div class="input-wrap">
+          <select id="dependents">
+            <option value="1">1명 (본인만)</option>
+            <option value="2">2명</option>
+            <option value="3">3명</option>
+            <option value="4">4명</option>
+            <option value="5">5명</option>
+          </select>
+        </div>
+        <div class="hint">부양가족이 많을수록 공제액이 늘어 실수령액이 소폭 증가합니다.</div>
+      </div>
+
+      <div class="field">
+        <label for="nonTaxable">월 비과세액 (식대 등, 만원 단위)</label>
+        <div class="input-wrap">
+          <input type="number" id="nonTaxable" value="20" min="0" />
+          <span class="suffix">만원</span>
+        </div>
+        <div class="hint">식대 비과세 한도는 월 20만원입니다. 해당 없으면 0으로 입력하세요.</div>
+      </div>
+
+      <button type="submit" class="submit">실수령액 계산하기</button>
+    </form>
+  </div>
+
+  <div id="result" class="card">
+    <div class="result-highlight">
+      <div class="label">예상 월 실수령액</div>
+      <div class="value" id="resNetMonthly">-</div>
+      <div class="sub-value">연 환산: <span id="resNetAnnual">-</span></div>
+    </div>
+
+    <table class="result-table">
+      <tbody>
+        <tr>
+          <td>세전 월급</td>
+          <td id="resGrossMonthly">-</td>
+        </tr>
+        <tr>
+          <td>국민연금</td>
+          <td id="resPension">-</td>
+        </tr>
+        <tr>
+          <td>건강보험 (장기요양 포함)</td>
+          <td id="resHealth">-</td>
+        </tr>
+        <tr>
+          <td>고용보험</td>
+          <td id="resEmployment">-</td>
+        </tr>
+        <tr>
+          <td>소득세</td>
+          <td id="resIncomeTax">-</td>
+        </tr>
+        <tr>
+          <td>지방소득세</td>
+          <td id="resLocalTax">-</td>
+        </tr>
+        <tr class="total">
+          <td>공제액 합계</td>
+          <td id="resDeductionTotal">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ad-slot">광고 영역 (애드센스 승인 후 노출)</div>
+
+  <div class="notice">
+    ※ 본 계산기는 2026년 기준 4대보험 요율과 소득세 간이 추정 공식을 사용합니다. 실제 회사 원천징수액은
+    국세청 근로소득 간이세액표 및 개인별 공제 항목(부양가족 상세, 보험료 상한 변경 등)에 따라 달라질 수 있습니다.
+    <ul>
+      <li>국민연금: 4.5% (기준소득월액 상한/하한 적용)</li>
+      <li>건강보험: 3.545% + 장기요양보험료(건강보험료의 12.95%)</li>
+      <li>고용보험: 0.9%</li>
+      <li>소득세: 종합소득세 기본세율 기준 간이 추정 (근로소득세액공제 반영)</li>
+    </ul>
+  </div>
+</main>
+
+<footer>
+  &copy; 2026 계산기모음. 본 계산 결과는 참고용이며 법적 효력이 없습니다.
+</footer>
+
+<script src="js/calc.js"></script>
+<script src="js/salary.js"></script>
+</body>
+</html>

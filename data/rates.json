@@ -1,0 +1,46 @@
+{
+  "_comment": "이 파일이 세율/보험료율의 단일 원본(source of truth)입니다. 값을 고칠 때는 이 파일만 수정하세요. js/calc.js는 scripts/generate-calc.mjs가 이 파일로부터 자동 생성합니다.",
+  "lastVerifiedAt": "2026-08-26",
+  "lastVerifiedBy": "manual + web search cross-check",
+  "pension": {
+    "employeeRate": 0.0475,
+    "totalRate": 0.095,
+    "reformNote": "2025.3 국민연금법 개정으로 2026년부터 보험료율이 매년 0.5%p씩 인상되어 2033년 13%(근로자 6.5%)까지 오를 예정. 매년 1월 1일 반드시 재확인할 것.",
+    "monthlyCap": 6590000,
+    "monthlyFloor": 410000,
+    "appliedPeriod": "2026-07-01 ~ 2027-06-30 (기준소득월액 상/하한액 기준, 보험료율 자체는 매년 1월 1일 변경)",
+    "source": "https://www.nps.or.kr/pnsinfo/ntpsklg/getOHAF0104M0.do",
+    "limitsSource": "https://www.nps.or.kr/pnsgdnc/newgdnc/getOHAE0001M1.do?pstId=ZZ202600000000000147"
+  },
+  "health": {
+    "employeeRate": 0.03595,
+    "totalRate": 0.0719,
+    "longTermCareTotalIncomeRate": 0.009448,
+    "appliedYear": 2026,
+    "source": "https://www.mohw.go.kr/board.es?act=view&bid=0027&list_no=1487279&mid=a10503000000",
+    "longTermCareSource": "https://www.mohw.go.kr/board.es?act=view&bid=0027&list_no=1487817&mid=a10503000000"
+  },
+  "employment": {
+    "employeeRate": 0.009,
+    "appliedYear": 2026,
+    "autoCheck": false,
+    "note": "실업급여 계정 고용보험료율(근로자 0.9%)은 자동으로 안정적으로 읽어올 수 있는 정부 웹페이지를 찾지 못해 자동확인 대상에서 제외함. 매년 1월 아래 참고 링크에서 수동 확인할 것.",
+    "source": "https://www.4insure.or.kr/pbiz/ntcn/inscSmlCalcView.do"
+  },
+  "earnedIncomeTaxCredit": {
+    "threshold1": 33000000,
+    "threshold2": 70000000,
+    "note": "2016년 이후 미변경 구간이나 세법 개정 시 확인 필요"
+  },
+  "taxBrackets": [
+    { "limit": 14000000, "rate": 0.06, "deduction": 0 },
+    { "limit": 50000000, "rate": 0.15, "deduction": 1260000 },
+    { "limit": 88000000, "rate": 0.24, "deduction": 5760000 },
+    { "limit": 150000000, "rate": 0.35, "deduction": 15440000 },
+    { "limit": 300000000, "rate": 0.38, "deduction": 19940000 },
+    { "limit": 500000000, "rate": 0.40, "deduction": 25940000 },
+    { "limit": 1000000000, "rate": 0.42, "deduction": 35940000 },
+    { "limit": null, "rate": 0.45, "deduction": 65940000 }
+  ],
+  "taxBracketsSource": "https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%EC%86%8C%EB%93%9D%EC%84%B8%EB%B2%95/%EC%A0%9C55%EC%A1%B0"
+}

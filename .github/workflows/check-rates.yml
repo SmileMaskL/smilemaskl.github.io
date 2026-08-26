@@ -1,0 +1,57 @@
+name: 4대보험/세율 자동 확인 및 반영
+
+# 비용 안전장치:
+#  - 이 저장소를 Public으로 유지하면 GitHub Actions 표준 러너(ubuntu-latest)는
+#    분(minute) 사용량이 완전히 무료이며 과금되지 않습니다.
+#  - 혹시 모를 사고를 막기 위해 job에 timeout-minutes를 걸어 무한 실행을 방지하고,
+#    concurrency로 실행이 겹치지 않게 합니다.
+#  - 이 워크플로는 외부 유료 서비스(API 키가 필요한 서비스 등)를 전혀 호출하지
+#    않습니다. 정부 공식 페이지를 그냥 읽기(GET)만 합니다.
+
+on:
+  schedule:
+    # 하루 3번: 07:00 / 13:00 / 19:00 (KST) = 22:00(전날) / 04:00 / 10:00 (UTC)
+    - cron: "0 22 * * *"
+    - cron: "0 4 * * *"
+    - cron: "0 10 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: check-rates
+  cancel-in-progress: true
+
+jobs:
+  check-rates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 요율 확인 스크립트 실행 (문제 발생 시 Error_log_날짜.txt 생성)
+        run: node scripts/check-rates.mjs
+
+      - name: 변경/오류 사항이 있으면 main에 바로 커밋
+        run: |
+          git config user.name "rate-check-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/rates.json js/calc.js
+          shopt -s nullglob
+          logs=(Error_log_*.txt)
+          if [ ${#logs[@]} -gt 0 ]; then
+            git add "${logs[@]}"
+          fi
+          if git diff --cached --quiet; then
+            echo "변경/오류 없음 - 커밋하지 않음"
+          else
+            git commit -m "chore: 4대보험/세율 자동 확인 결과 반영 ($(date +%Y-%m-%d\ %H:%M))"
+            git push origin HEAD:main
+          fi
