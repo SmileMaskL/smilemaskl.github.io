@@ -26,14 +26,27 @@ function bracketsToJs(brackets) {
     .join("\n");
 }
 
+function limitTiersToJs(tiers) {
+  return tiers
+    .map((t) => {
+      const maxGross = t.maxGross === null ? "Infinity" : t.maxGross;
+      if (t.amount !== undefined) {
+        return `  { maxGross: ${maxGross}, amount: ${t.amount} },`;
+      }
+      return `  { maxGross: ${maxGross}, threshold: ${t.threshold}, base: ${t.base}, rate: ${t.rate}, floor: ${t.floor} },`;
+    })
+    .join("\n");
+}
+
 const output = `/*
   calc.js — 연봉 실수령액 계산 공식 모듈 (자동 생성 파일)
 
   ** 이 파일을 직접 수정하지 마세요. **
   이 파일은 scripts/generate-calc.mjs 가 data/rates.json 을 읽어서 자동으로 만듭니다.
   값을 고치려면 data/rates.json 을 수정한 뒤 "node scripts/generate-calc.mjs" 를 실행하세요.
-  (매일 실행되는 GitHub Actions가 data/rates.json 변경을 감지하면 이 파일도 함께 갱신하여
-   Pull Request를 만듭니다. scripts/check-rates.mjs, .github/workflows/check-rates.yml 참고)
+  (하루 3번 실행되는 GitHub Actions가 data/rates.json 변경을 감지하면 이 파일도 함께
+   갱신하여 main 브랜치에 바로 커밋합니다. scripts/check-rates.mjs,
+   .github/workflows/check-rates.yml 참고)
 
   생성 시각: ${new Date().toISOString()}
   기준 데이터 검증일: ${rates.lastVerifiedAt}
@@ -47,19 +60,23 @@ const RATES = {
   health: ${rates.health.employeeRate},         // 건강보험 ${(rates.health.employeeRate * 100).toFixed(3)}% (근로자 부담분, ${rates.health.appliedYear}년 기준)
   longTermCareRate: ${longTermCareRatioOfHealth}, // 장기요양보험료율 (건강보험료의 ${(longTermCareRatioOfHealth * 100).toFixed(2)}%, 소득대비 ${(rates.health.longTermCareTotalIncomeRate * 100).toFixed(4)}% 기준 역산)
   employment: ${rates.employment.employeeRate},       // 고용보험 ${(rates.employment.employeeRate * 100).toFixed(2)}%
-
-  // 근로소득세액공제 한도 구간 기준액
-  taxCreditThreshold1: ${rates.earnedIncomeTaxCredit.threshold1},
-  taxCreditThreshold2: ${rates.earnedIncomeTaxCredit.threshold2},
 };
 
-// 근로소득공제 (총급여 기준, 소득세법 제47조)
+// 주어진 값에 해당하는 구간을 찾아 "value * rate - deduction" 형태로 계산한다.
+// (종합소득세, 근로소득공제 모두 같은 누진 구조라 계산 함수를 공유한다.)
+function evalBracket(value, brackets) {
+  const bracket = brackets.find((b) => value <= b.limit);
+  return value * bracket.rate - bracket.deduction;
+}
+
+// 근로소득공제 (소득세법 제47조, 총급여 기준)
+const EARNED_INCOME_DEDUCTION_BRACKETS = [
+${bracketsToJs(rates.earnedIncomeDeduction.brackets)}
+];
+const MAX_EARNED_INCOME_DEDUCTION = ${rates.earnedIncomeDeduction.maxDeduction}; // 공제액은 이 금액을 넘을 수 없음 (제47조 단서)
+
 function earnedIncomeDeduction(gross) {
-  if (gross <= 5000000) return gross * 0.7;
-  if (gross <= 15000000) return 3500000 + (gross - 5000000) * 0.4;
-  if (gross <= 45000000) return 7500000 + (gross - 15000000) * 0.15;
-  if (gross <= 100000000) return 12000000 + (gross - 45000000) * 0.05;
-  return 14750000 + (gross - 100000000) * 0.02;
+  return Math.min(evalBracket(gross, EARNED_INCOME_DEDUCTION_BRACKETS), MAX_EARNED_INCOME_DEDUCTION);
 }
 
 // 종합소득세 기본세율 (소득세법 제55조, 과세표준 구간별 누진공제 방식)
@@ -69,28 +86,34 @@ ${bracketsToJs(rates.taxBrackets)}
 
 function calcIncomeTax(taxBase) {
   if (taxBase <= 0) return 0;
-  const bracket = TAX_BRACKETS.find((b) => taxBase <= b.limit);
-  return taxBase * bracket.rate - bracket.deduction;
+  return evalBracket(taxBase, TAX_BRACKETS);
 }
 
-// 근로소득세액공제 (산출세액 및 총급여 기준)
-function earnedIncomeTaxCredit(calculatedTax, gross) {
-  let credit;
-  if (calculatedTax <= 1300000) {
-    credit = calculatedTax * 0.55;
-  } else {
-    credit = 715000 + (calculatedTax - 1300000) * 0.3;
-  }
+// 근로소득세액공제 (소득세법 제59조)
+const CREDIT = {
+  rateLow: ${rates.earnedIncomeTaxCredit.rateLow},
+  rateHigh: ${rates.earnedIncomeTaxCredit.rateHigh},
+  bracketLimit: ${rates.earnedIncomeTaxCredit.bracketLimit},
+  baseAtBracketLimit: ${rates.earnedIncomeTaxCredit.baseAtBracketLimit},
+};
 
-  let limit;
-  if (gross <= RATES.taxCreditThreshold1) {
-    limit = 740000;
-  } else if (gross <= RATES.taxCreditThreshold2) {
-    limit = Math.max(740000 - (gross - RATES.taxCreditThreshold1) * 0.008, 660000);
-  } else {
-    limit = Math.max(660000 - (gross - RATES.taxCreditThreshold2) * 0.5, 500000);
-  }
-  return Math.min(credit, limit);
+// 총급여 구간별 공제 한도 (제59조 제2항 - 총 4단계, 마지막 구간이 예전에 누락돼 있었음)
+const CREDIT_LIMIT_TIERS = [
+${limitTiersToJs(rates.earnedIncomeTaxCredit.limitTiers)}
+];
+
+function earnedIncomeTaxCreditLimit(gross) {
+  const tier = CREDIT_LIMIT_TIERS.find((t) => gross <= t.maxGross);
+  if (tier.amount !== undefined) return tier.amount;
+  return Math.max(tier.base - (gross - tier.threshold) * tier.rate, tier.floor);
+}
+
+function earnedIncomeTaxCredit(calculatedTax, gross) {
+  const credit =
+    calculatedTax <= CREDIT.bracketLimit
+      ? calculatedTax * CREDIT.rateLow
+      : CREDIT.baseAtBracketLimit + (calculatedTax - CREDIT.bracketLimit) * CREDIT.rateHigh;
+  return Math.min(credit, earnedIncomeTaxCreditLimit(gross));
 }
 
 /**

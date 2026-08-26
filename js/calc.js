@@ -4,10 +4,11 @@
   ** 이 파일을 직접 수정하지 마세요. **
   이 파일은 scripts/generate-calc.mjs 가 data/rates.json 을 읽어서 자동으로 만듭니다.
   값을 고치려면 data/rates.json 을 수정한 뒤 "node scripts/generate-calc.mjs" 를 실행하세요.
-  (매일 실행되는 GitHub Actions가 data/rates.json 변경을 감지하면 이 파일도 함께 갱신하여
-   Pull Request를 만듭니다. scripts/check-rates.mjs, .github/workflows/check-rates.yml 참고)
+  (하루 3번 실행되는 GitHub Actions가 data/rates.json 변경을 감지하면 이 파일도 함께
+   갱신하여 main 브랜치에 바로 커밋합니다. scripts/check-rates.mjs,
+   .github/workflows/check-rates.yml 참고)
 
-  생성 시각: 2026-08-26T05:02:32.560Z
+  생성 시각: 2026-08-26T06:13:57.061Z
   기준 데이터 검증일: 2026-08-26
 */
 
@@ -19,19 +20,27 @@ const RATES = {
   health: 0.03595,         // 건강보험 3.595% (근로자 부담분, 2026년 기준)
   longTermCareRate: 0.131405, // 장기요양보험료율 (건강보험료의 13.14%, 소득대비 0.9448% 기준 역산)
   employment: 0.009,       // 고용보험 0.90%
-
-  // 근로소득세액공제 한도 구간 기준액
-  taxCreditThreshold1: 33000000,
-  taxCreditThreshold2: 70000000,
 };
 
-// 근로소득공제 (총급여 기준, 소득세법 제47조)
+// 주어진 값에 해당하는 구간을 찾아 "value * rate - deduction" 형태로 계산한다.
+// (종합소득세, 근로소득공제 모두 같은 누진 구조라 계산 함수를 공유한다.)
+function evalBracket(value, brackets) {
+  const bracket = brackets.find((b) => value <= b.limit);
+  return value * bracket.rate - bracket.deduction;
+}
+
+// 근로소득공제 (소득세법 제47조, 총급여 기준)
+const EARNED_INCOME_DEDUCTION_BRACKETS = [
+  { limit: 5000000, rate: 0.7, deduction: 0 },
+  { limit: 15000000, rate: 0.4, deduction: -1500000 },
+  { limit: 45000000, rate: 0.15, deduction: -5250000 },
+  { limit: 100000000, rate: 0.05, deduction: -9750000 },
+  { limit: Infinity, rate: 0.02, deduction: -12750000 },
+];
+const MAX_EARNED_INCOME_DEDUCTION = 20000000; // 공제액은 이 금액을 넘을 수 없음 (제47조 단서)
+
 function earnedIncomeDeduction(gross) {
-  if (gross <= 5000000) return gross * 0.7;
-  if (gross <= 15000000) return 3500000 + (gross - 5000000) * 0.4;
-  if (gross <= 45000000) return 7500000 + (gross - 15000000) * 0.15;
-  if (gross <= 100000000) return 12000000 + (gross - 45000000) * 0.05;
-  return 14750000 + (gross - 100000000) * 0.02;
+  return Math.min(evalBracket(gross, EARNED_INCOME_DEDUCTION_BRACKETS), MAX_EARNED_INCOME_DEDUCTION);
 }
 
 // 종합소득세 기본세율 (소득세법 제55조, 과세표준 구간별 누진공제 방식)
@@ -48,28 +57,37 @@ const TAX_BRACKETS = [
 
 function calcIncomeTax(taxBase) {
   if (taxBase <= 0) return 0;
-  const bracket = TAX_BRACKETS.find((b) => taxBase <= b.limit);
-  return taxBase * bracket.rate - bracket.deduction;
+  return evalBracket(taxBase, TAX_BRACKETS);
 }
 
-// 근로소득세액공제 (산출세액 및 총급여 기준)
-function earnedIncomeTaxCredit(calculatedTax, gross) {
-  let credit;
-  if (calculatedTax <= 1300000) {
-    credit = calculatedTax * 0.55;
-  } else {
-    credit = 715000 + (calculatedTax - 1300000) * 0.3;
-  }
+// 근로소득세액공제 (소득세법 제59조)
+const CREDIT = {
+  rateLow: 0.55,
+  rateHigh: 0.3,
+  bracketLimit: 1300000,
+  baseAtBracketLimit: 715000,
+};
 
-  let limit;
-  if (gross <= RATES.taxCreditThreshold1) {
-    limit = 740000;
-  } else if (gross <= RATES.taxCreditThreshold2) {
-    limit = Math.max(740000 - (gross - RATES.taxCreditThreshold1) * 0.008, 660000);
-  } else {
-    limit = Math.max(660000 - (gross - RATES.taxCreditThreshold2) * 0.5, 500000);
-  }
-  return Math.min(credit, limit);
+// 총급여 구간별 공제 한도 (제59조 제2항 - 총 4단계, 마지막 구간이 예전에 누락돼 있었음)
+const CREDIT_LIMIT_TIERS = [
+  { maxGross: 33000000, amount: 740000 },
+  { maxGross: 70000000, threshold: 33000000, base: 740000, rate: 0.008, floor: 660000 },
+  { maxGross: 120000000, threshold: 70000000, base: 660000, rate: 0.5, floor: 500000 },
+  { maxGross: Infinity, threshold: 120000000, base: 500000, rate: 0.5, floor: 200000 },
+];
+
+function earnedIncomeTaxCreditLimit(gross) {
+  const tier = CREDIT_LIMIT_TIERS.find((t) => gross <= t.maxGross);
+  if (tier.amount !== undefined) return tier.amount;
+  return Math.max(tier.base - (gross - tier.threshold) * tier.rate, tier.floor);
+}
+
+function earnedIncomeTaxCredit(calculatedTax, gross) {
+  const credit =
+    calculatedTax <= CREDIT.bracketLimit
+      ? calculatedTax * CREDIT.rateLow
+      : CREDIT.baseAtBracketLimit + (calculatedTax - CREDIT.bracketLimit) * CREDIT.rateHigh;
+  return Math.min(credit, earnedIncomeTaxCreditLimit(gross));
 }
 
 /**
