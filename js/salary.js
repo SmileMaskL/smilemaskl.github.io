@@ -15,6 +15,12 @@ function runCalculation() {
     return;
   }
 
+  saveLastInput("salary", {
+    salary: document.getElementById("salary").value,
+    dependents: document.getElementById("dependents").value,
+    nonTaxable: document.getElementById("nonTaxable").value,
+  });
+
   const r = calculateSalary(annualSalary, dependents, nonTaxable);
 
   document.getElementById("resNetMonthly").textContent = formatWon(r.netMonthly);
@@ -40,3 +46,13 @@ document.getElementById("salary").addEventListener("input", function (e) {
   const raw = e.target.value.replace(/[^0-9]/g, "");
   e.target.value = raw ? Number(raw).toLocaleString("ko-KR") : "";
 });
+
+// 마지막 입력값 불러오기 (재방문 시 자동 채움)
+(function restoreLastInput() {
+  const last = loadLastInput("salary");
+  if (!last) return;
+  if (last.salary) document.getElementById("salary").value = last.salary;
+  if (last.dependents) document.getElementById("dependents").value = last.dependents;
+  if (last.nonTaxable) document.getElementById("nonTaxable").value = last.nonTaxable;
+  document.getElementById("rememberedHint").classList.add("show");
+})();

@@ -14,6 +14,11 @@ document.getElementById("calcForm").addEventListener("submit", function (e) {
     return;
   }
 
+  saveLastInput("parental", {
+    monthlyWage: document.getElementById("monthlyWage").value,
+    months: document.getElementById("months").value,
+  });
+
   const r = calculateParentalLeavePay(monthlyWage, months);
 
   document.getElementById("resTotal").textContent = formatWon(r.total);
@@ -39,3 +44,11 @@ document.getElementById("monthlyWage").addEventListener("input", function (e) {
   const raw = e.target.value.replace(/[^0-9]/g, "");
   e.target.value = raw ? Number(raw).toLocaleString("ko-KR") : "";
 });
+
+(function restoreLastInput() {
+  const last = loadLastInput("parental");
+  if (!last) return;
+  if (last.monthlyWage) document.getElementById("monthlyWage").value = last.monthlyWage;
+  if (last.months) document.getElementById("months").value = last.months;
+  document.getElementById("rememberedHint").classList.add("show");
+})();

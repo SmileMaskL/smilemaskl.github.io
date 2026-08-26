@@ -8,6 +8,9 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%AE%3C/text%3E%3C/svg%3E" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
 <link rel="stylesheet" href="css/style.css" />
+<script>
+  try { if (localStorage.getItem("theme") === "dark") document.documentElement.setAttribute("data-theme", "dark"); } catch (e) {}
+</script>
 
 <!-- 구글 애드센스 코드는 승인 완료 후 이 위치에 붙여넣으세요. 자세한 안내는 수정가이드.txt 참고 -->
 </head>
@@ -19,10 +22,17 @@
     <nav>
       <a href="index.html">홈</a>
     </nav>
+    <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()" aria-label="다크모드 전환">🌙</button>
   </div>
 </header>
 
 <section class="hero">
+  <div class="hero-deco" aria-hidden="true">
+    <svg class="blob-1" viewBox="0 0 200 200"><defs><linearGradient id="hg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e11d6e"/><stop offset="100%" stop-color="#fb7185"/></linearGradient></defs><circle cx="100" cy="100" r="90" fill="url(#hg1)"/></svg>
+    <svg class="blob-2" viewBox="0 0 200 200"><defs><linearGradient id="hg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fb7185"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient></defs><circle cx="100" cy="100" r="90" fill="url(#hg2)"/></svg>
+    <svg class="blob-3" viewBox="0 0 40 40" style="color:#e11d6e"><circle cx="20" cy="20" r="18" fill="currentColor"/></svg>
+    <svg class="blob-4" viewBox="0 0 40 40" style="color:#7c3aed"><circle cx="20" cy="20" r="18" fill="currentColor"/></svg>
+  </div>
   <div class="hero-inner">
     <h1><span style="font-size:1.3em;">👶</span> 육아휴직급여 계산기</h1>
     <p>2026년 개정 기준 (사후지급금 폐지, 매월 전액 지급)</p>
@@ -31,6 +41,7 @@
 
 <main>
   <div class="card">
+    <div id="rememberedHint" class="remembered-hint">💾 지난번 입력하신 값을 불러왔어요</div>
     <form id="calcForm">
       <div class="field">
         <label for="monthlyWage">통상임금 (월급, 만원 단위)</label>
@@ -75,6 +86,20 @@
     <table class="result-table">
       <tbody id="monthlyBody"></tbody>
     </table>
+
+    <div class="share-row">
+      <button type="button" class="btn-secondary" onclick="shareCurrentPage('제 육아휴직급여 예상 수령액을 계산해봤어요! 무료 계산기로 확인해보세요 👶')">🔗 공유하기</button>
+      <button type="button" class="btn-secondary" onclick="printPage()">🖨️ 인쇄/저장</button>
+    </div>
+  </div>
+
+  <div class="related-calcs">
+    <div class="section-title">이런 계산기도 많이 찾아요</div>
+    <div class="related-list">
+      <a class="related-card" href="salary.html"><span class="icon">💰</span>연봉 실수령액 계산기</a>
+      <a class="related-card" href="retirement.html"><span class="icon">🎁</span>퇴직금 계산기</a>
+      <a class="related-card" href="propertyTax.html"><span class="icon">🏠</span>재산세 계산기</a>
+    </div>
   </div>
 
   <div class="ad-slot">광고 영역 (애드센스 승인 후 노출)</div>
@@ -92,6 +117,7 @@
   &copy; 2026 SmileMaskL의 계산기. 본 계산 결과는 참고용이며 법적 효력이 없습니다.
 </footer>
 
+<script src="js/common.js"></script>
 <script src="js/parentalLeaveCalc.js"></script>
 <script src="js/parental.js"></script>
 </body>

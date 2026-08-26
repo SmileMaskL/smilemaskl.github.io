@@ -24,6 +24,26 @@
   --c-property-bg: #fff3e0;
 }
 
+:root[data-theme="dark"] {
+  --primary: #60a5fa;
+  --primary-dark: #3b82f6;
+  --primary-light: #93c5fd;
+  --bg: #0f1115;
+  --card-bg: #191c23;
+  --text: #eef0f4;
+  --text-sub: #9aa1b1;
+  --border: #2a2e38;
+  --accent-bg: #1c2333;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.55);
+
+  --c-salary-bg: #17233d;
+  --c-retire-bg: #241a3d;
+  --c-parental-bg: #3a1729;
+  --c-property-bg: #3a2712;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -48,6 +68,16 @@ body {
   background-position: 0 0, 0 0, 0 0, 0 0;
   background-repeat: no-repeat, no-repeat, no-repeat, repeat;
   background-attachment: fixed, fixed, fixed, fixed;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+:root[data-theme="dark"] body {
+  background-image:
+    radial-gradient(50% 40% at 8% 0%, rgba(96, 165, 250, 0.14), transparent 70%),
+    radial-gradient(45% 40% at 95% 10%, rgba(167, 139, 250, 0.14), transparent 70%),
+    radial-gradient(40% 35% at 90% 95%, rgba(244, 114, 182, 0.10), transparent 70%),
+    radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1.5px);
+  background-size: auto, auto, auto, 22px 22px;
 }
 
 a {
@@ -119,6 +149,26 @@ nav a:hover {
   background: var(--accent-bg);
 }
 
+.theme-toggle {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.theme-toggle:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
 /* ---------- 레이아웃 ---------- */
 
 main {
@@ -130,7 +180,9 @@ main {
 /* .hero는 <header> 바로 다음, <main> 바깥에 위치시켜 뷰포트 전체 폭을 채우는
    띠(band) 형태로 만든다. 그 안의 .hero-inner만 다시 max-width로 가운데 정렬. */
 .hero {
+  position: relative;
   width: 100%;
+  overflow: hidden;
   text-align: center;
   padding: 64px 20px 44px;
   background:
@@ -141,8 +193,33 @@ main {
 }
 
 .hero-inner {
+  position: relative;
+  z-index: 1;
   max-width: 960px;
   margin: 0 auto;
+}
+
+/* 직접 그린 장식용 벡터 도형 (외부 이미지 없이 순수 CSS/SVG, 저작권 걱정 없음) */
+.hero-deco {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-deco svg {
+  position: absolute;
+  height: auto;
+  opacity: 0.5;
+}
+
+.hero-deco .blob-1 { top: -60px; left: -40px; width: 220px; }
+.hero-deco .blob-2 { bottom: -80px; right: -30px; width: 260px; }
+.hero-deco .blob-3 { top: 30%; right: 8%; width: 60px; opacity: 0.35; }
+.hero-deco .blob-4 { bottom: 15%; left: 6%; width: 46px; opacity: 0.35; }
+
+:root[data-theme="dark"] .hero-deco svg {
+  opacity: 0.35;
 }
 
 .hero h1 {
@@ -287,7 +364,7 @@ main {
   border-radius: 10px;
   font-size: 1rem;
   color: var(--text);
-  background: #fff;
+  background: var(--card-bg);
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
@@ -329,6 +406,50 @@ button.submit:hover {
 
 button.submit:active {
   transform: translateY(0);
+}
+
+.share-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.btn-secondary {
+  flex: 1;
+  padding: 12px;
+  background: var(--accent-bg);
+  color: var(--primary);
+  border: none;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.12s ease, transform 0.12s ease;
+}
+
+.btn-secondary:hover {
+  filter: brightness(0.97);
+  transform: translateY(-1px);
+}
+
+:root[data-theme="dark"] .btn-secondary:hover {
+  filter: brightness(1.15);
+}
+
+.remembered-hint {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--primary);
+  background: var(--accent-bg);
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.remembered-hint.show {
+  display: flex;
 }
 
 /* ---------- 결과 영역 ---------- */
@@ -416,7 +537,7 @@ button.submit:active {
   color: var(--text-sub);
   font-size: 0.85rem;
   margin: 24px auto;
-  background: #fafbfd;
+  background: var(--card-bg);
 }
 
 .notice {
@@ -437,6 +558,45 @@ button.submit:active {
   padding-left: 18px;
 }
 
+.related-calcs {
+  max-width: 640px;
+  margin: 28px auto 0;
+}
+
+.related-calcs .section-title {
+  margin: 0 0 12px 4px;
+}
+
+.related-calcs .related-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.related-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  font-size: 0.88rem;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.related-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.related-card .icon {
+  font-size: 20px;
+}
+
 footer {
   text-align: center;
   padding: 36px 20px 44px;
@@ -454,4 +614,13 @@ footer a {
 @media (max-width: 480px) {
   .hero { padding: 40px 16px 28px; }
   .card { padding: 20px; }
+}
+
+@media print {
+  header, footer, .hero, .ad-slot, .share-row, .related-calcs, .notice,
+  #calcForm, .theme-toggle {
+    display: none !important;
+  }
+  main { padding: 0; max-width: 100%; }
+  .card { box-shadow: none; border: none; max-width: 100%; }
 }

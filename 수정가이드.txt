@@ -22,7 +22,10 @@ salary-calculator/
  │   ├─ parentalLeaveCalc.js   육아휴직급여 계산 공식 (2026년 기준 값, 자동확인 대상 아님)
  │   ├─ parental.js            육아휴직급여 계산기 화면 입출력 처리
  │   ├─ propertyTaxCalc.js     재산세 계산 공식 (2026년 기준 값, 자동확인 대상 아님)
- │   └─ propertyTax.js         재산세 계산기 화면 입출력 처리
+ │   ├─ propertyTax.js         재산세 계산기 화면 입출력 처리
+ │   └─ common.js              5개 페이지 공통 기능 (다크모드, 공유하기, 인쇄하기,
+ │                              마지막 입력값 기억하기) - 전부 브라우저 안에서만
+ │                              동작해서 서버 비용이 전혀 들지 않음
  ├─ data/
  │   └─ rates.json        ★ 연봉 계산기용 세율/보험료율의 "원본" 데이터 (여기를 수정)
  ├─ scripts/

@@ -23,6 +23,14 @@ document.getElementById("calcForm").addEventListener("submit", function (e) {
     return;
   }
 
+  saveLastInput("retirement", {
+    startDate,
+    endDate,
+    wage3m: document.getElementById("wage3m").value,
+    bonus: document.getElementById("bonus").value,
+    leaveAllowance: document.getElementById("leaveAllowance").value,
+  });
+
   const r = calculateRetirementPay(startDate, endDate, wage3m, bonus, leaveAllowance);
 
   document.getElementById("resRetirementPay").textContent = formatWon(r.retirementPay);
@@ -46,3 +54,14 @@ document.getElementById("calcForm").addEventListener("submit", function (e) {
     e.target.value = raw ? Number(raw).toLocaleString("ko-KR") : "";
   });
 });
+
+(function restoreLastInput() {
+  const last = loadLastInput("retirement");
+  if (!last) return;
+  if (last.startDate) document.getElementById("startDate").value = last.startDate;
+  if (last.endDate) document.getElementById("endDate").value = last.endDate;
+  if (last.wage3m) document.getElementById("wage3m").value = last.wage3m;
+  if (last.bonus) document.getElementById("bonus").value = last.bonus;
+  if (last.leaveAllowance) document.getElementById("leaveAllowance").value = last.leaveAllowance;
+  document.getElementById("rememberedHint").classList.add("show");
+})();
