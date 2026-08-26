@@ -258,10 +258,17 @@ class="ad-slot" 인 <div> 태그를 원하는 위치로 옮기거나,
 ====================================================
 8. 사이트 이름/문구/색상 바꾸기
 ====================================================
-- 사이트 이름("계산기모음") 변경: index.html, salary.html 안의
-  <a class="logo">계산기모음</a> 부분과 <title>, <meta name="description">
+- 사이트 이름("계산기모음") 변경: 5개 html 파일(index/salary/retirement/parental/
+  propertyTax) 안의 <a class="logo">...계산기모음</a> 부분과 각 파일의 <title>,
+  <meta name="description">
 - 메인 색상 변경: css/style.css 맨 위 :root { --primary: #2563eb; ... }
   의 색상 코드만 바꾸면 버튼/포인트 색이 전체적으로 바뀝니다.
+- 계산기별 카드 색상(메인 화면 아이콘/뱃지) 변경: 같은 :root 블록 안의
+  --c-salary, --c-retire, --c-parental, --c-property (및 각각의 -bg 배경색)
+- 파비콘(브라우저 탭 아이콘)·로고 이모지 변경: 각 html의 <link rel="icon" ...>
+  줄과 <span class="logo-mark">🧮</span> 안의 이모지를 원하는 것으로 교체
+  (🧮 대신 다른 이모지로 바꾸기만 하면 됩니다)
+- 카드 아이콘(💰🎁👶🏠) 변경: index.html의 <span class="icon">이모지</span> 부분
 
 
 ====================================================
