@@ -11,6 +11,17 @@
 <script>
   try { if (localStorage.getItem("theme") === "dark") document.documentElement.setAttribute("data-theme", "dark"); } catch (e) {}
 </script>
+
+<!-- 구글 애널리틱스: analytics.google.com 측정 ID로 G-XXXXXXXXXX 교체 (수정가이드.txt 참고) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag("js", new Date());
+  gtag("config", "G-XXXXXXXXXX");
+</script>
+
+<!-- 구글 애드센스 코드는 승인 완료 후 이 위치에 붙여넣으세요. 자세한 안내는 수정가이드.txt 참고 -->
 </head>
 <body>
 
