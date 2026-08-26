@@ -304,17 +304,45 @@ class="ad-slot" 인 <div> 태그를 원하는 위치로 옮기거나,
 ====================================================
 8. 사이트 이름/문구/색상 바꾸기
 ====================================================
-- 사이트 이름("계산기모음") 변경: 5개 html 파일(index/salary/retirement/parental/
-  propertyTax) 안의 <a class="logo">...계산기모음</a> 부분과 각 파일의 <title>,
-  <meta name="description">
+- 사이트 이름("SmileMaskL의 계산기") 변경: 5개 html 파일(index/salary/retirement/
+  parental/propertyTax) 안의 <a class="logo">...SmileMaskL의 계산기</a> 부분과
+  각 파일의 <title>, <meta name="description">, 그리고 footer의 &copy; 문구
 - 메인 색상 변경: css/style.css 맨 위 :root { --primary: #2563eb; ... }
-  의 색상 코드만 바꾸면 버튼/포인트 색이 전체적으로 바뀝니다.
-- 계산기별 카드 색상(메인 화면 아이콘/뱃지) 변경: 같은 :root 블록 안의
-  --c-salary, --c-retire, --c-parental, --c-property (및 각각의 -bg 배경색)
+  의 색상 코드만 바꾸면 버튼/포인트 색이 전체적으로 바뀝니다. (다크모드용 색은
+  바로 아래 :root[data-theme="dark"] { ... } 블록에 따로 있습니다)
+- 계산기별 카드 색상(메인 화면 아이콘/뱃지, 히어로 장식 도형) 변경: 같은 :root
+  블록 안의 --c-salary, --c-retire, --c-parental, --c-property (및 각각의
+  -bg 배경색). 히어로 장식 원형(SVG)의 색은 각 html <section class="hero"> 안
+  <div class="hero-deco">의 stop-color 값을 직접 바꾸면 됩니다.
 - 파비콘(브라우저 탭 아이콘)·로고 이모지 변경: 각 html의 <link rel="icon" ...>
   줄과 <span class="logo-mark">🧮</span> 안의 이모지를 원하는 것으로 교체
   (🧮 대신 다른 이모지로 바꾸기만 하면 됩니다)
 - 카드 아이콘(💰🎁👶🏠) 변경: index.html의 <span class="icon">이모지</span> 부분
+  및 각 계산기 페이지 하단 "이런 계산기도 많이 찾아요" 카드의 아이콘
+
+
+====================================================
+8-1. 다크모드 / 공유하기 / 인쇄 / 입력값 기억 기능 안내
+====================================================
+전부 js/common.js 하나에 들어있고, 서버 없이 브라우저(localStorage)에서만
+동작해서 평생 무료입니다.
+
+- 다크모드: 헤더의 🌙/☀️ 버튼(toggleTheme 함수)으로 전환. 선택한 테마는
+  localStorage에 저장되어 다음 방문 때도 유지됩니다.
+- 공유하기 버튼: shareCurrentPage() 함수. 각 계산기 결과 화면의 "🔗 공유하기"
+  버튼에 연결되어 있고, 버튼 클릭 시 뜨는 공유 문구는 각 html 파일의
+  onclick="shareCurrentPage('문구')" 부분을 고치면 바뀝니다.
+- 인쇄/저장 버튼: printPage() 함수. 브라우저 인쇄 기능을 여는 것뿐이라
+  이용자가 "PDF로 저장"을 선택하면 PDF 저장도 가능합니다. 인쇄 시에는
+  css/style.css 맨 아래 @media print 블록에 따라 헤더/광고/폼 등은 자동으로
+  숨겨지고 결과만 인쇄됩니다.
+- 입력값 기억 기능: saveLastInput()/loadLastInput() 함수. 계산기별로
+  "lastInput:계산기이름" 이라는 이름으로 localStorage에 저장됩니다. 이용자가
+  브라우저 방문기록/사이트 데이터를 지우면 사라지며, 다른 기기에는 공유되지
+  않습니다(그 사람 브라우저에만 저장됨).
+- "이런 계산기도 많이 찾아요" 추천 카드: 각 계산기 html 파일 안
+  <div class="related-calcs"> 부분. 새 계산기를 추가하면 여기에도 링크를
+  추가해주는 게 좋습니다 (9번 항목 참고).
 
 
 ====================================================
@@ -327,14 +355,21 @@ class="ad-slot" 인 <div> 태그를 원하는 위치로 옮기거나,
 추가할 때도 이 구조를 그대로 따라 하면 됩니다.
 
 1) 가장 비슷한 기존 html 파일을 복사해서 이름 변경 (예: 4대보험 계산기라면
-   salary.html 복사)
+   salary.html 복사) - 이렇게 하면 다크모드/공유하기/인쇄/입력값 기억/애널
+   리틱스/애드센스 자리까지 전부 같이 복사되어 따로 손댈 필요가 없습니다.
 2) 안의 입력 항목(라벨, input)을 새 계산기에 맞게 수정
 3) js 폴더에 새 계산 로직 파일 + 화면 입출력 파일 작성 (예: fourInsuranceCalc.js,
-   fourInsurance.js)
-4) index.html의 <div class="card-list"> 안에 새 카드(<a class="calc-card"
-   href="...">) 추가
-5) sitemap.xml에도 새 페이지 주소 한 줄 추가
-6) 7번 항목대로 <head>에 애드센스 주석도 넣어두기
+   fourInsurance.js). <script> 태그에서 js/common.js는 그대로 유지하고, 그
+   다음에 새 계산 로직 파일들을 이어 붙이면 됩니다.
+4) 결과 영역에 있는 share-row 버튼의 onclick="shareCurrentPage('문구')" 안
+   문구와, 히어로 영역 <div class="hero-deco">의 색상(stop-color)을 새
+   계산기에 맞게 바꾸기 (8/8-1번 항목 참고)
+5) index.html의 <div class="card-list"> 안에 새 카드(<a class="calc-card"
+   href="...">) 추가, 그리고 기존 4개 계산기 페이지들의 "이런 계산기도 많이
+   찾아요"(<div class="related-calcs">)에도 새 계산기 링크를 추가
+6) sitemap.xml에도 새 페이지 주소 한 줄 추가
+7) 7번 항목대로 <head>에 애드센스 주석도 넣어두고, 6-1번 항목의 구글
+   애널리틱스 코드(G-XXXXXXXXXX 부분)도 실제 측정 ID로 채워두기
 
 
 ====================================================
