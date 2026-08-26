@@ -221,13 +221,19 @@ Actions 설정을 보려면:
 ====================================================
 6. GitHub 사용자명 / 사이트 주소 반영
 ====================================================
-아래 파일에 있는 "YOUR_USERNAME" 을 본인의 GitHub 아이디로 바꾸세요.
+이 저장소는 이름을 "smilemaskl.github.io" 로 지어서, GitHub Pages가 사이트를
+루트 주소(https://smilemaskl.github.io/, 뒤에 아무 경로 없이)에서 서비스해줍니다.
+(저장소 이름이 정확히 "아이디.github.io" 형태이면 GitHub이 자동으로 루트 주소를
+내려줍니다. 네이버 서치어드바이저처럼 "호스트 단위" 주소만 받는 곳에 등록하려면
+이 방식이 필수입니다.)
 
-- robots.txt
-- sitemap.xml
-
-레포지토리 이름을 salary-calculator가 아닌 다른 이름으로 만들었다면
-위 두 파일의 "/salary-calculator/" 부분도 실제 레포 이름으로 바꿔야 합니다.
+robots.txt / sitemap.xml 안의 주소는 이미 https://smilemaskl.github.io/ 기준으로
+맞춰뒀습니다. 만약 GitHub 아이디가 다르거나 저장소 이름을 다르게(예: 그냥
+salary-calculator) 만들었다면:
+- 저장소 이름이 "아이디.github.io" 가 아니면 사이트는 https://아이디.github.io/저장소이름/
+  형태의 하위 경로로 서비스됩니다. 이 경우 robots.txt/sitemap.xml의 모든 주소
+  뒤에 "/저장소이름/"을 다시 붙여야 하고, 네이버 서치어드바이저 등록 시
+  "호스트 단위 URL" 오류가 날 수 있습니다 (10번 항목 참고).
 
 
 ====================================================
@@ -282,19 +288,34 @@ class="ad-slot" 인 <div> 태그를 원하는 위치로 옮기거나,
 10. GitHub에 올리고 배포하는 방법 (무료)
 ====================================================
 [GitHub Pages로 배포]
-1) github.com 에서 새 저장소(Repository) 생성 (예: salary-calculator, 반드시 Public)
+1) github.com 에서 새 저장소(Repository) 생성. 이름을 정확히
+   "본인아이디.github.io" 로 지으면(예: smilemaskl.github.io) GitHub Pages가
+   자동으로 사이트를 루트 주소(하위 경로 없이)에서 서비스해줍니다. 반드시 Public.
 2) 이 폴더(salary-calculator) 내용을 저장소에 push
    (터미널 예시)
      git init
      git add .
-     git commit -m "연봉 실수령액 계산기 최초 배포"
+     git commit -m "계산기 모음 최초 배포"
      git branch -M main
-     git remote add origin https://github.com/본인아이디/salary-calculator.git
+     git remote add origin https://github.com/본인아이디/본인아이디.github.io.git
      git push -u origin main
 3) 저장소 Settings > Pages 메뉴에서
    Source를 "Deploy from a branch", Branch를 "main / (root)"로 선택 후 저장
-4) 몇 분 뒤 https://본인아이디.github.io/salary-calculator/ 로 접속 확인
+4) 몇 분 뒤 https://본인아이디.github.io/ 로 접속 확인 (경로 없이 루트 주소)
 5) 3번, 4번 항목의 Workflow permissions / Spending limit 설정을 꼭 해두세요.
+
+※ 저장소를 이미 다른 이름(예: salary-calculator)으로 만들어서 운영 중이라면,
+  저장소 Settings 맨 위 "Repository name" 칸에서 이름을 "본인아이디.github.io"로
+  바꾸기(Rename)만 해도 같은 효과를 볼 수 있습니다. 이름을 바꾸면:
+  - 사이트 주소가 https://본인아이디.github.io/저장소이름/ 에서
+    https://본인아이디.github.io/ (경로 없이) 로 바뀝니다.
+  - 로컬 git remote 주소도 새 이름으로 바꿔줘야 합니다:
+      git remote set-url origin https://github.com/본인아이디/본인아이디.github.io.git
+  - 구글 서치콘솔에 예전 주소(.../저장소이름/)로 등록했다면, 새 루트 주소로
+    속성을 다시 추가하고 소유확인을 다시 해야 합니다 (예전 속성은 지워도 되고
+    안 지워도 상관없습니다).
+  - 네이버 서치어드바이저는 애초에 하위 경로 주소를 등록할 수 없기 때문에
+    (11번 항목 참고) 이 방식으로 루트 주소를 만들어야만 등록이 가능합니다.
 
 [또는 Netlify로 배포]
 1) netlify.com 가입 후 "Add new site" > "Import an existing project"
