@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>육아휴직급여 계산기 - 2026년 개정 기준</title>
+<meta name="description" content="통상임금과 육아휴직 사용 개월수만 입력하면 2026년 개정된 육아휴직급여 기준으로 월별·총 예상 수령액을 계산해드립니다." />
+<link rel="stylesheet" href="css/style.css" />
+
+<!-- 구글 애드센스 코드는 승인 완료 후 이 위치에 붙여넣으세요. 자세한 안내는 수정가이드.txt 참고 -->
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="index.html">계산기모음</a>
+    <nav>
+      <a href="index.html">홈</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>육아휴직급여 계산기</h1>
+    <p>2026년 개정 기준 (사후지급금 폐지, 매월 전액 지급)</p>
+  </section>
+
+  <div class="card">
+    <form id="calcForm">
+      <div class="field">
+        <label for="monthlyWage">통상임금 (월급, 만원 단위)</label>
+        <div class="input-wrap">
+          <input type="text" id="monthlyWage" inputmode="numeric" placeholder="예: 300" required />
+          <span class="suffix">만원</span>
+        </div>
+        <div class="hint">세전 월 기본급 + 고정수당 기준입니다. 보통 월급명세서의 "통상임금"과 비슷합니다.</div>
+      </div>
+
+      <div class="field">
+        <label for="months">육아휴직 사용 개월 수</label>
+        <div class="input-wrap">
+          <select id="months">
+            <option value="1">1개월</option>
+            <option value="2">2개월</option>
+            <option value="3">3개월</option>
+            <option value="4">4개월</option>
+            <option value="5">5개월</option>
+            <option value="6">6개월</option>
+            <option value="7">7개월</option>
+            <option value="8">8개월</option>
+            <option value="9">9개월</option>
+            <option value="10">10개월</option>
+            <option value="11">11개월</option>
+            <option value="12" selected>12개월</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="submit">육아휴직급여 계산하기</button>
+    </form>
+  </div>
+
+  <div id="result" class="card">
+    <div class="result-highlight">
+      <div class="label">총 예상 수령액</div>
+      <div class="value" id="resTotal">-</div>
+      <div class="sub-value">사용 기간: <span id="resMonths">-</span></div>
+    </div>
+
+    <table class="result-table">
+      <tbody id="monthlyBody"></tbody>
+    </table>
+  </div>
+
+  <div class="ad-slot">광고 영역 (애드센스 승인 후 노출)</div>
+
+  <div class="notice">
+    ※ 1~3개월차 통상임금 100%(월 상한 250만원), 4~6개월차 100%(월 상한 200만원),
+    7개월차부터 80%(월 상한 160만원), 공통 하한액 월 70만원 기준입니다 (2026년 기준).
+    부모가 함께 육아휴직을 사용할 때 첫 6개월간 추가로 더 받는 "6+6 부모육아휴직제"
+    특례는 이 계산기에 포함되지 않았습니다. 실제 지급액은 고용센터 심사에 따라
+    달라질 수 있습니다.
+  </div>
+</main>
+
+<footer>
+  &copy; 2026 계산기모음. 본 계산 결과는 참고용이며 법적 효력이 없습니다.
+</footer>
+
+<script src="js/parentalLeaveCalc.js"></script>
+<script src="js/parental.js"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>재산세 계산기 - 2026년 공시가격 기준</title>
+<meta name="description" content="주택 공시가격만 입력하면 2026년 기준 공정시장가액비율과 1세대1주택 특례세율을 반영한 재산세 예상액을 계산해드립니다." />
+<link rel="stylesheet" href="css/style.css" />
+
+<!-- 구글 애드센스 코드는 승인 완료 후 이 위치에 붙여넣으세요. 자세한 안내는 수정가이드.txt 참고 -->
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="index.html">계산기모음</a>
+    <nav>
+      <a href="index.html">홈</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>재산세 계산기</h1>
+    <p>주택 공시가격 기준 2026년 재산세 예상액</p>
+  </section>
+
+  <div class="card">
+    <form id="calcForm">
+      <div class="field">
+        <label for="officialPrice">주택 공시가격 (만원 단위)</label>
+        <div class="input-wrap">
+          <input type="text" id="officialPrice" inputmode="numeric" placeholder="예: 50000 (5억원)" required />
+          <span class="suffix">만원</span>
+        </div>
+        <div class="hint">국토교통부 부동산공시가격 알리미(realtyprice.kr)에서 확인할 수 있습니다.</div>
+      </div>
+
+      <div class="field">
+        <label for="isOneHousehold">1세대 1주택 여부</label>
+        <div class="input-wrap">
+          <select id="isOneHousehold">
+            <option value="yes">예 (1세대 1주택)</option>
+            <option value="no">아니오 (다주택 등)</option>
+          </select>
+        </div>
+        <div class="hint">1세대 1주택이면서 공시가격 9억원 이하이면 특례세율이 적용됩니다.</div>
+      </div>
+
+      <div class="field">
+        <label>
+          <input type="checkbox" id="includeUrbanAreaTax" checked style="width:auto; margin-right:8px;" />
+          도시지역분 포함 (도시계획구역 내 주택은 대부분 해당)
+        </label>
+      </div>
+
+      <button type="submit" class="submit">재산세 계산하기</button>
+    </form>
+  </div>
+
+  <div id="result" class="card">
+    <div class="result-highlight">
+      <div class="label">예상 재산세 합계 (지방교육세 포함)</div>
+      <div class="value" id="resTotal">-</div>
+    </div>
+
+    <table class="result-table">
+      <tbody>
+        <tr>
+          <td>과세표준</td>
+          <td id="resTaxBase">-</td>
+        </tr>
+        <tr>
+          <td>공정시장가액비율</td>
+          <td id="resFairMarketRatio">-</td>
+        </tr>
+        <tr>
+          <td>적용 세율표</td>
+          <td id="resRateType">-</td>
+        </tr>
+        <tr>
+          <td>재산세 (산출세액)</td>
+          <td id="resPropertyTax">-</td>
+        </tr>
+        <tr>
+          <td>지방교육세</td>
+          <td id="resLocalEduTax">-</td>
+        </tr>
+        <tr>
+          <td>도시지역분</td>
+          <td id="resUrbanAreaTax">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ad-slot">광고 영역 (애드센스 승인 후 노출)</div>
+
+  <div class="notice">
+    ※ 2026년 기준 공정시장가액비율(1세대1주택 43~45%, 그 외 60%)과 재산세 세율표를
+    적용한 추정치입니다. 전년 대비 세액 급증을 막는 "세부담 상한제"는 개별 보유
+    이력이 필요해 반영되지 않았습니다. 실제 고지세액과 차이가 있을 수 있으니
+    정확한 금액은 위택스(wetax.go.kr) 또는 관할 구청에 문의하세요.
+  </div>
+</main>
+
+<footer>
+  &copy; 2026 계산기모음. 본 계산 결과는 참고용이며 법적 효력이 없습니다.
+</footer>
+
+<script src="js/propertyTaxCalc.js"></script>
+<script src="js/propertyTax.js"></script>
+</body>
+</html>

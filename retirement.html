@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>퇴직금 계산기 - 근로기준법 평균임금 기준</title>
+<meta name="description" content="입사일, 퇴사일과 최근 3개월 급여만 입력하면 근로기준법 평균임금 방식으로 예상 퇴직금을 계산해드립니다." />
+<link rel="stylesheet" href="css/style.css" />
+
+<!-- 구글 애드센스 코드는 승인 완료 후 이 위치에 붙여넣으세요. 자세한 안내는 수정가이드.txt 참고 -->
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="index.html">계산기모음</a>
+    <nav>
+      <a href="index.html">홈</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>퇴직금 계산기</h1>
+    <p>근로기준법 평균임금 방식으로 예상 퇴직금을 계산합니다</p>
+  </section>
+
+  <div class="card">
+    <form id="calcForm">
+      <div class="field">
+        <label for="startDate">입사일</label>
+        <div class="input-wrap">
+          <input type="date" id="startDate" required />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="endDate">퇴사일</label>
+        <div class="input-wrap">
+          <input type="date" id="endDate" required />
+        </div>
+        <div class="hint">마지막 근무일의 다음날 기준으로 입력하세요.</div>
+      </div>
+
+      <div class="field">
+        <label for="wage3m">퇴직 전 3개월간 임금 총액 (만원 단위)</label>
+        <div class="input-wrap">
+          <input type="text" id="wage3m" inputmode="numeric" placeholder="예: 900 (월 300만원 × 3개월)" required />
+          <span class="suffix">만원</span>
+        </div>
+        <div class="hint">기본급 + 각종 수당 포함, 3개월치 합계입니다. 급여명세서 3장을 더하면 됩니다.</div>
+      </div>
+
+      <div class="field">
+        <label for="bonus">최근 1년간 상여금 총액 (만원 단위)</label>
+        <div class="input-wrap">
+          <input type="text" id="bonus" inputmode="numeric" value="0" />
+          <span class="suffix">만원</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="leaveAllowance">미사용 연차수당 (만원 단위)</label>
+        <div class="input-wrap">
+          <input type="text" id="leaveAllowance" inputmode="numeric" value="0" />
+          <span class="suffix">만원</span>
+        </div>
+        <div class="hint">상여금·연차수당은 연간 총액의 3/12만큼만 평균임금 계산에 반영됩니다.</div>
+      </div>
+
+      <button type="submit" class="submit">퇴직금 계산하기</button>
+    </form>
+  </div>
+
+  <div id="result" class="card">
+    <div id="warning" class="notice" style="display:none; background:#fef3c7; margin-bottom:16px;"></div>
+
+    <div class="result-highlight">
+      <div class="label">예상 퇴직금</div>
+      <div class="value" id="resRetirementPay">-</div>
+    </div>
+
+    <table class="result-table">
+      <tbody>
+        <tr>
+          <td>재직일수</td>
+          <td id="resServiceDays">-</td>
+        </tr>
+        <tr>
+          <td>1일 평균임금</td>
+          <td id="resAvgDaily">-</td>
+        </tr>
+        <tr>
+          <td>평균임금 산정기간 일수</td>
+          <td id="resPeriodDays">-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ad-slot">광고 영역 (애드센스 승인 후 노출)</div>
+
+  <div class="notice">
+    ※ 퇴직금 = 1일 평균임금 × 30일 × (재직일수 ÷ 365). 1일 평균임금 = 퇴직 전 3개월간
+    지급된 임금총액(상여금·연차수당은 3/12만 반영) ÷ 그 3개월간의 총 일수 (근로기준법
+    시행령 제2조). 세부담 상한, 퇴직소득세 등은 반영되지 않은 세전 추정액입니다.
+  </div>
+</main>
+
+<footer>
+  &copy; 2026 계산기모음. 본 계산 결과는 참고용이며 법적 효력이 없습니다.
+</footer>
+
+<script src="js/retirementCalc.js"></script>
+<script src="js/retirement.js"></script>
+</body>
+</html>
