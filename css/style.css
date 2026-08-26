@@ -32,10 +32,22 @@ body {
   margin: 0;
   font-family: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont,
     "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-  background: var(--bg);
   color: var(--text);
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+
+  /* 화면 넓은 데스크톱에서 좌우 여백이 텅 비어 보이지 않도록,
+     뷰포트 전체에 은은한 그라데이션 + 점무늬 배경을 고정시켜 깔아준다. */
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(50% 40% at 8% 0%, rgba(37, 99, 235, 0.10), transparent 70%),
+    radial-gradient(45% 40% at 95% 10%, rgba(124, 58, 237, 0.10), transparent 70%),
+    radial-gradient(40% 35% at 90% 95%, rgba(225, 29, 110, 0.07), transparent 70%),
+    radial-gradient(circle, rgba(25, 29, 40, 0.06) 1px, transparent 1.5px);
+  background-size: auto, auto, auto, 22px 22px;
+  background-position: 0 0, 0 0, 0 0, 0 0;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat;
+  background-attachment: fixed, fixed, fixed, fixed;
 }
 
 a {
@@ -56,7 +68,7 @@ header {
 }
 
 header .header-inner {
-  max-width: 880px;
+  max-width: 960px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -110,22 +122,31 @@ nav a:hover {
 /* ---------- 레이아웃 ---------- */
 
 main {
-  max-width: 880px;
+  max-width: 960px;
   margin: 0 auto;
-  padding: 0 20px 64px;
+  padding: 32px 20px 64px;
 }
 
+/* .hero는 <header> 바로 다음, <main> 바깥에 위치시켜 뷰포트 전체 폭을 채우는
+   띠(band) 형태로 만든다. 그 안의 .hero-inner만 다시 max-width로 가운데 정렬. */
 .hero {
+  width: 100%;
   text-align: center;
-  padding: 56px 16px 36px;
-  margin: 0 -20px 8px;
+  padding: 64px 20px 44px;
   background:
-    radial-gradient(60% 100% at 15% 0%, rgba(37, 99, 235, 0.10), transparent),
-    radial-gradient(60% 100% at 85% 0%, rgba(124, 58, 237, 0.10), transparent);
+    linear-gradient(180deg, rgba(37, 99, 235, 0.06), transparent 70%),
+    radial-gradient(60% 140% at 12% 0%, rgba(37, 99, 235, 0.14), transparent),
+    radial-gradient(60% 140% at 88% 0%, rgba(124, 58, 237, 0.14), transparent);
+  border-bottom: 1px solid var(--border);
+}
+
+.hero-inner {
+  max-width: 960px;
+  margin: 0 auto;
 }
 
 .hero h1 {
-  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  font-size: clamp(1.7rem, 4vw, 2.3rem);
   font-weight: 800;
   letter-spacing: -0.02em;
   margin: 0 0 10px;
@@ -140,6 +161,9 @@ main {
 /* ---------- 카드 공통 ---------- */
 
 .card {
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -382,6 +406,7 @@ button.submit:active {
 /* ---------- 기타 ---------- */
 
 .ad-slot {
+  max-width: 640px;
   min-height: 100px;
   border: 1px dashed var(--border);
   border-radius: var(--radius);
@@ -390,11 +415,14 @@ button.submit:active {
   justify-content: center;
   color: var(--text-sub);
   font-size: 0.85rem;
-  margin: 24px 0;
+  margin: 24px auto;
   background: #fafbfd;
 }
 
 .notice {
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
   font-size: 0.83rem;
   color: var(--text-sub);
   background: var(--accent-bg);
