@@ -10,7 +10,8 @@
     "monthlyFloor": 410000,
     "appliedPeriod": "2026-07-01 ~ 2027-06-30 (기준소득월액 상/하한액 기준, 보험료율 자체는 매년 1월 1일 변경)",
     "source": "https://www.nps.or.kr/pnsinfo/ntpsklg/getOHAF0104M0.do",
-    "limitsSource": "https://www.nps.or.kr/pnsgdnc/newgdnc/getOHAE0001M1.do?pstId=ZZ202600000000000147"
+    "limitsSource": "https://www.4insure.or.kr/pbiz/ntcn/inscSmlCalcView.do",
+    "limitsSourceNote": "nps.or.kr 페이지는 자바스크립트로 내용을 그려서 자동 확인이 안 됐음(2026-08-27 확인). 서버가 바로 텍스트를 내려주는 4insure.or.kr로 출처를 변경함."
   },
   "health": {
     "employeeRate": 0.03595,

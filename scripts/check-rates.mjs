@@ -272,11 +272,12 @@ async function checkPensionLimits() {
   const url = rates.pension.limitsSource;
   try {
     const text = await fetchText(url);
-    const floorMatches = [...text.matchAll(/하한액[^0-9]{0,15}([0-9]{2,3}(?:,[0-9]{3})+)\s*원/g)].map(
-      (m) => Number(m[1].replace(/,/g, ""))
+    // 4insure.or.kr 문구 기준: "(최저) 41만원 / (최고) 659만원" 형태 (단위: 만원)
+    const floorMatches = [...text.matchAll(/최저[^0-9]{0,10}([0-9]{1,4})\s*만원/g)].map(
+      (m) => Number(m[1]) * 10000
     );
-    const capMatches = [...text.matchAll(/상한액[^0-9]{0,15}([0-9]{2,3}(?:,[0-9]{3})+)\s*원/g)].map(
-      (m) => Number(m[1].replace(/,/g, ""))
+    const capMatches = [...text.matchAll(/최고[^0-9]{0,10}([0-9]{1,4})\s*만원/g)].map(
+      (m) => Number(m[1]) * 10000
     );
     const cap = capMatches.length ? Math.max(...capMatches) : null;
     const floor = floorMatches.length ? Math.max(...floorMatches) : null;
@@ -297,7 +298,7 @@ async function checkPensionLimits() {
       reportChange("pension.monthlyFloor", rates.pension.monthlyFloor, floor, url);
       rates.pension.monthlyFloor = floor;
     }
-    if (!cap && !floor) reportFailure("pension.limits", "페이지에서 상한액/하한액 패턴을 찾지 못함");
+    if (!cap && !floor) reportFailure("pension.limits", "페이지에서 최저/최고 금액 패턴을 찾지 못함");
   } catch (e) {
     reportFailure("pension.limits", `fetch 실패: ${e.message}`);
   }
