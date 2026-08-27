@@ -755,6 +755,72 @@ footer a {
   text-decoration: underline;
 }
 
+/* 제휴마케팅(쿠팡파트너스 등) 상품 추천 영역 */
+.affiliate-section {
+  max-width: 640px;
+  margin: 24px auto 0;
+}
+
+.affiliate-disclosure {
+  font-size: 0.78rem;
+  color: var(--text-sub);
+  background: var(--accent-bg);
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.affiliate-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.affiliate-card {
+  display: block;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.affiliate-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.affiliate-card img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: var(--accent-bg);
+  display: block;
+}
+
+.affiliate-card .affiliate-card-body {
+  padding: 10px 12px;
+}
+
+.affiliate-card .affiliate-card-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.affiliate-card .affiliate-card-price {
+  font-size: 0.82rem;
+  color: var(--primary);
+  font-weight: 700;
+}
+
 /* 양옆 고정 광고 (화면이 넓어서 좌우에 빈 공간이 생길 때만 노출) */
 .side-ad {
   position: fixed;
