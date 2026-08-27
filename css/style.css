@@ -755,6 +755,23 @@ footer a {
   text-decoration: underline;
 }
 
+/* 양옆 고정 광고 (화면이 넓어서 좌우에 빈 공간이 생길 때만 노출) */
+.side-ad {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 160px;
+  min-height: 300px;
+  z-index: 5;
+}
+
+.side-ad.side-ad-left { left: 16px; }
+.side-ad.side-ad-right { right: 16px; }
+
+@media (max-width: 1400px) {
+  .side-ad { display: none; }
+}
+
 @media (max-width: 480px) {
   .hero { padding: 40px 16px 28px; }
   .card { padding: 20px; }
@@ -762,7 +779,7 @@ footer a {
 
 @media print {
   header, footer, .hero, .ad-slot, .share-row, .related-calcs, .notice,
-  #calcForm, .theme-toggle, .trust-badge, .calc-basis {
+  #calcForm, .theme-toggle, .trust-badge, .calc-basis, .side-ad {
     display: none !important;
   }
   main { padding: 0; max-width: 100%; }
