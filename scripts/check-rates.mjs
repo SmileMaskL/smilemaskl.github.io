@@ -47,7 +47,14 @@ function reportFailure(field, reason) {
   FAILURES.push({ field, reason });
 }
 
-async function fetchText(url) {
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// GitHub Actions 서버(클라우드 데이터센터 IP)는 일부 정부/법령 사이트에서
+// 일반 가정용/회사 IP보다 더 자주 차단·타임아웃될 수 있다. 그래서 실제
+// 브라우저에 가까운 헤더를 보내고, 실패 시 한 번 더 재시도한다.
+async function fetchOnce(url) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 15000);
   try {
@@ -56,6 +63,8 @@ async function fetchText(url) {
       headers: {
         "User-Agent":
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
       },
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -63,6 +72,25 @@ async function fetchText(url) {
     return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ");
   } finally {
     clearTimeout(timeout);
+  }
+}
+
+function describeFetchError(e) {
+  const cause = e && e.cause;
+  const causeCode = cause && (cause.code || cause.name);
+  return causeCode ? `${e.message} (원인: ${causeCode})` : e.message;
+}
+
+async function fetchText(url) {
+  try {
+    return await fetchOnce(url);
+  } catch (e) {
+    await sleep(3000);
+    try {
+      return await fetchOnce(url);
+    } catch (e2) {
+      throw new Error(describeFetchError(e2));
+    }
   }
 }
 
