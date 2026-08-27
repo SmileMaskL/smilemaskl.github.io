@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>개인정보처리방침 - SmileMaskL의 계산기</title>
+<meta name="description" content="SmileMaskL의 계산기 사이트의 개인정보처리방침입니다." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%AE%3C/text%3E%3C/svg%3E" />
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#2563eb" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<link rel="stylesheet" href="css/style.css" />
+<script>
+  try { if (localStorage.getItem("theme") === "dark") document.documentElement.setAttribute("data-theme", "dark"); } catch (e) {}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="index.html"><span class="logo-mark">🧮</span>SmileMaskL의 계산기</a>
+    <nav>
+      <a href="index.html">🏡 Main</a>
+    </nav>
+    <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()" aria-label="다크모드 전환">🌙</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>개인정보처리방침</h1>
+    <p>최종 수정일: 2026-08-26</p>
+  </div>
+</section>
+
+<main>
+  <div class="card" style="max-width: 760px; text-align: left;">
+    <p>SmileMaskL의 계산기(이하 "사이트")는 이용자의 개인정보를 소중히 다루며,
+    관련 법령을 준수합니다. 본 사이트는 별도의 회원가입이나 로그인 없이
+    누구나 이용할 수 있으며, 이용자가 직접 입력하는 연봉·급여 등의 계산용
+    숫자는 <strong>서버로 전송되지 않고 이용자의 브라우저 안에서만 계산됩니다.</strong></p>
+
+    <h3>1. 수집하는 정보</h3>
+    <p>사이트 자체는 회원 정보를 수집하지 않습니다. 다만 아래 두 가지
+    외부 서비스를 통해 방문 통계 및 광고가 운영될 수 있습니다.</p>
+    <ul>
+      <li><strong>Google Analytics(구글 애널리틱스)</strong>: 방문자 수, 접속 페이지,
+        접속 기기/브라우저 종류 등 통계성 정보를 쿠키를 통해 수집합니다.
+        수집된 정보는 사이트 운영자가 방문 통계를 확인하는 용도로만 사용됩니다.</li>
+      <li><strong>Google AdSense(구글 애드센스)</strong>: 광고 게재를 위해 쿠키를
+        사용하여 이용자의 관심사 기반 광고를 표시할 수 있습니다.</li>
+    </ul>
+
+    <h3>2. 계산기 입력값 처리</h3>
+    <p>연봉, 급여, 공시가격 등 계산기에 입력하는 값은 서버로 전송되지 않고
+    이용자의 브라우저 내에서만 계산됩니다. 다음 방문 시 자동으로 값을
+    채워주는 기능은 이용자의 브라우저에 저장(localStorage)되며, 사이트
+    운영자를 포함한 어느 누구에게도 전송되지 않습니다. 브라우저의 사이트
+    데이터를 삭제하면 이 값도 함께 삭제됩니다.</p>
+
+    <h3>3. 쿠키 관리</h3>
+    <p>이용자는 브라우저 설정을 통해 쿠키 저장을 거부하거나 삭제할 수
+    있습니다. 다만 쿠키 저장을 거부할 경우 일부 기능(다크모드 유지, 입력값
+    기억 등) 이용에 제한이 있을 수 있습니다.</p>
+
+    <h3>4. 제3자 제공</h3>
+    <p>본 사이트는 이용자의 개인정보를 별도로 수집·저장하지 않으므로 제3자에게
+    제공하지 않습니다. Google Analytics 및 Google AdSense를 통해 수집되는
+    정보의 처리는 각 서비스의 개인정보처리방침을 따릅니다.</p>
+    <ul>
+      <li><a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google 개인정보처리방침</a></li>
+      <li><a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">Google 광고 관련 기술 정책</a></li>
+    </ul>
+
+    <h3>5. 면책조항</h3>
+    <p>본 사이트에서 제공하는 모든 계산 결과는 참고용 추정치이며, 법적 효력이
+    없습니다. 정확한 금액은 관련 기관(국세청, 고용센터, 관할 구청, 세무사 등)을
+    통해 확인하시기 바랍니다.</p>
+
+    <h3>6. 문의</h3>
+    <p>본 방침에 대한 문의사항은 사이트 저장소의 GitHub Issues를 통해 남겨주세요.</p>
+  </div>
+</main>
+
+<footer>
+  &copy; 2026 SmileMaskL의 계산기. 본 계산 결과는 참고용이며 법적 효력이 없습니다.
+</footer>
+
+<script src="js/common.js"></script>
+</body>
+</html>
