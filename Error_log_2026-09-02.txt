@@ -5,3 +5,11 @@
     scripts/check-rates.mjs의 정규식이나 data/rates.json의 source 링크를 확인해 손봐주세요.
     (수정가이드.txt 참고)
 
+[2026-09-02 14:03 UTC] 요율 자동 확인 중 문제 발견
+  - taxBrackets: fetch/파싱 실패: fetch failed (원인: UND_ERR_CONNECT_TIMEOUT)
+  - earnedIncomeDeduction: fetch/파싱 실패: fetch failed (원인: UND_ERR_CONNECT_TIMEOUT)
+  - earnedIncomeTaxCredit: fetch/파싱 실패: fetch failed (원인: UND_ERR_CONNECT_TIMEOUT)
+  → 보통 정부/법령 사이트의 문구·구조가 바뀌어서 생깁니다.
+    scripts/check-rates.mjs의 정규식이나 data/rates.json의 source 링크를 확인해 손봐주세요.
+    (수정가이드.txt 참고)
+
