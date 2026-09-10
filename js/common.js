@@ -74,9 +74,9 @@ function loadLastInput(key) {
 //    페이지 상단/하단에 실제 쿠팡 상품이 클릭 없이 자동으로 표시됩니다.
 // 3) 비워두면 지금처럼 "쿠팡에서 추천 상품 확인하기" 링크 카드만 보입니다
 //    (자리가 비지 않도록 하는 기본값이며, 값을 채우면 자동으로 이 위젯으로 교체됩니다).
-const COUPANG_TRACKING_CODE = "";
-const COUPANG_WIDGET_TOP_ID = "";
-const COUPANG_WIDGET_BOTTOM_ID = "";
+const COUPANG_TRACKING_CODE = "AF8068770";
+const COUPANG_WIDGET_TOP_ID = "1027960";
+const COUPANG_WIDGET_BOTTOM_ID = "1027960";
 
 function mountCoupangSlot(wrapperId, slotId, fallbackId, widgetId) {
   const wrapper = document.getElementById(wrapperId);
