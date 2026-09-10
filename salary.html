@@ -73,6 +73,13 @@
 </section>
 
 <main>
+  <div class="affiliate-section" id="coupang-top" style="display:none">
+    <div class="affiliate-disclosure">
+      이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
+    </div>
+    <div id="coupang-top-slot"></div>
+  </div>
+
   <div class="trust-badge">
     <span class="pulse-dot"></span> 하루 3번 정부 공식 자료를 자동으로 확인합니다 · 최근 확인: <span class="js-last-verified">확인 중...</span>
   </div>
@@ -188,12 +195,12 @@
     상품을 더 추가하려면 아래 <a class="affiliate-card">...</a> 블록을
     복사해서 affiliate-list 안에 붙여넣고 href만 새 링크로 바꾸세요.
   -->
-  <div class="affiliate-section">
+  <div class="affiliate-section" id="coupang-bottom">
     <div class="section-title">추천 상품</div>
     <div class="affiliate-disclosure">
       이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
     </div>
-    <div class="affiliate-list">
+    <div class="affiliate-list" id="coupang-bottom-fallback">
       <a class="affiliate-card" href="https://link.coupang.com/a/gyj6ByIPnM" target="_blank" rel="noopener sponsored">
         <div class="affiliate-card-body" style="text-align:center; padding:28px 12px;">
           <div style="font-size:2rem; margin-bottom:8px;">🛒</div>
@@ -201,9 +208,18 @@
         </div>
       </a>
     </div>
+    <div id="coupang-bottom-slot"></div>
   </div>
 
-  <div class="ad-slot">광고 영역 (애드센스 승인 후 노출)</div>
+  <div class="ad-slot">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-4674765308814336"
+         data-ad-slot="3358731394"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
 
   <div class="notice">
     ※ 본 계산기는 매년 자동으로 확인·반영되는 최신 4대보험 요율과 소득세 간이 추정 공식을
