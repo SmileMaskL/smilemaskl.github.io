@@ -553,6 +553,24 @@ button.submit:active {
   line-height: 1.7;
 }
 
+.related-site-box {
+  max-width: 640px;
+  margin: 18px auto 0;
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--accent-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.related-site-box a {
+  align-self: flex-start;
+  font-weight: 600;
+}
+
 .notice ul {
   margin: 6px 0 0;
   padding-left: 18px;
