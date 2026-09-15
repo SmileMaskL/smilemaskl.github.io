@@ -1,0 +1,47 @@
+name: 검색엔진에 URL 갱신 알림 (IndexNow)
+
+# 매일 한 번, 빙/네이버에 IndexNow 프로토콜로 "이 URL들이 갱신됐다"고
+# 알린다. 저장소 루트의 <키>.txt 파일로 소유권을 증명하는 방식이라 별도
+# 인증 없이 호출 가능하다.
+#
+# 구글은 대상에서 뺐다 — google.com/ping?sitemap=...은 2023년 6월에 이미
+# 공식 폐지돼 지금은 404만 돌려준다(직접 호출해서 확인함,
+# https://developers.google.com/search/blog/2023/06/sitemaps-lastmod-ping
+# 참고). 구글 쪽은 sitemap.xml의 <lastmod>를 실제 변경일에 맞춰 정확히
+# 유지하는 것이 지금 구글이 공식 권장하는 방식이다(페이지를 고칠 때
+# sitemap.xml의 해당 lastmod도 같이 업데이트할 것). 사람이 서치콘솔에
+# 로그인해서 눌러야 하는 "URL 검사 → 색인 생성 요청"은 계정 자동화가
+# 필요해 이용약관 위반 소지가 있고, 반복 요청한다고 색인이 더 빨라지지도
+# 않아서 자동화하지 않는다.
+on:
+  schedule:
+    - cron: "0 5 * * *" # 매일 UTC 05:00 (KST 14:00)
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    env:
+      SITE_URL: https://smilemaskl.github.io
+      INDEXNOW_KEY: 99fa29bdaa52de5884eaa3d37f11d5cc
+    steps:
+      - name: IndexNow(빙/네이버)에 URL 목록 전송
+        run: |
+          curl -sS -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d @- <<EOF
+          {
+            "host": "smilemaskl.github.io",
+            "key": "${INDEXNOW_KEY}",
+            "keyLocation": "${SITE_URL}/${INDEXNOW_KEY}.txt",
+            "urlList": [
+              "${SITE_URL}/",
+              "${SITE_URL}/salary.html",
+              "${SITE_URL}/retirement.html",
+              "${SITE_URL}/parental.html",
+              "${SITE_URL}/propertyTax.html",
+              "${SITE_URL}/privacy.html"
+            ]
+          }
+          EOF
