@@ -26,7 +26,7 @@ concurrency:
 jobs:
   check-rates:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: 저장소 체크아웃
         uses: actions/checkout@v4
@@ -36,19 +36,14 @@ jobs:
         with:
           node-version: "20"
 
-      - name: 요율 확인 스크립트 실행 (문제 발생 시 Error_log_날짜.txt 생성)
+      - name: 요율 확인 스크립트 실행 (Log/Error 또는 Log/Success에 결과 기록)
         run: node scripts/check-rates.mjs
 
       - name: 변경/오류 사항이 있으면 main에 바로 커밋
         run: |
           git config user.name "rate-check-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/rates.json js/calc.js
-          shopt -s nullglob
-          logs=(Error_log_*.txt)
-          if [ ${#logs[@]} -gt 0 ]; then
-            git add "${logs[@]}"
-          fi
+          git add data/rates.json js/calc.js Log/
           if git diff --cached --quiet; then
             echo "변경/오류 없음 - 커밋하지 않음"
           else

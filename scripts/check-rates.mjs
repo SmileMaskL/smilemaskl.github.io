@@ -20,13 +20,24 @@
      정규식으로 파싱한다. 파싱한 결과가 내부적으로 앞뒤가 안 맞으면(연속되지
      않으면, 한도가 이상하면 등) 절대 적용하지 않는다.
 
-  문제가 하나라도 있으면(스크래핑 실패, 검증 실패) 프로젝트 루트에
-  Error_log_YYYY-MM-DD.txt 파일을 만들거나 이어 붙인다.
+  문제가 하나라도 있으면(스크래핑 실패, 검증 실패) Log/Error/YYYY-MM/ 아래에
+  Error_log_YYYY-MM-DD.txt 파일을 만들거나 이어 붙인다. 문제가 없으면
+  Log/Success/YYYY-MM/ 아래에 Success_log_YYYY-MM-DD.txt를 남긴다.
+  월 폴더 단위로 보관하며, LOG_RETENTION_MONTHS(기본 6개월)보다 오래된
+  월 폴더는 실행할 때마다 자동으로 삭제한다.
 
   로컬 실행: node scripts/check-rates.mjs
 */
 
-import { readFileSync, writeFileSync, appendFileSync } from "node:fs";
+import {
+  readFileSync,
+  writeFileSync,
+  appendFileSync,
+  mkdirSync,
+  existsSync,
+  readdirSync,
+  rmSync,
+} from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { execSync } from "node:child_process";
@@ -53,10 +64,10 @@ function sleep(ms) {
 
 // GitHub Actions 서버(클라우드 데이터센터 IP)는 일부 정부/법령 사이트에서
 // 일반 가정용/회사 IP보다 더 자주 차단·타임아웃될 수 있다. 그래서 실제
-// 브라우저에 가까운 헤더를 보내고, 실패 시 한 번 더 재시도한다.
+// 브라우저에 가까운 헤더를 보내고, 실패 시 재시도한다.
 async function fetchOnce(url) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 15000);
+  const timeout = setTimeout(() => controller.abort(), 20000);
   try {
     const res = await fetch(url, {
       signal: controller.signal,
@@ -81,17 +92,20 @@ function describeFetchError(e) {
   return causeCode ? `${e.message} (원인: ${causeCode})` : e.message;
 }
 
+// 정부/법령 사이트는 간헐적으로 타임아웃이 나는 경우가 많아서(로그 기준
+// 절반 가까이 실패하는 소스도 있었다), 총 3회 시도하고 시도 간격을 점점
+// 늘린다(3초 → 6초). 그래도 실패하면(예: IP 자체가 차단된 경우) 포기한다.
 async function fetchText(url) {
-  try {
-    return await fetchOnce(url);
-  } catch (e) {
-    await sleep(3000);
+  let lastErr;
+  for (let attempt = 1; attempt <= 3; attempt++) {
     try {
       return await fetchOnce(url);
-    } catch (e2) {
-      throw new Error(describeFetchError(e2));
+    } catch (e) {
+      lastErr = e;
+      if (attempt < 3) await sleep(3000 * attempt);
     }
   }
+  throw new Error(describeFetchError(lastErr));
 }
 
 // ---------- 공용 파서 ----------
@@ -606,9 +620,22 @@ async function checkEarnedIncomeTaxCredit() {
   }
 }
 
+const LOG_ROOT = path.join(ROOT, "Log");
+const LOG_RETENTION_MONTHS = 6;
+
+function monthFolder(dateStr) {
+  return dateStr.slice(0, 7); // "YYYY-MM"
+}
+
+function writeLog(kind, today, lines) {
+  const dir = path.join(LOG_ROOT, kind, monthFolder(today));
+  mkdirSync(dir, { recursive: true });
+  const logPath = path.join(dir, `${kind}_log_${today}.txt`);
+  appendFileSync(logPath, lines.join("\n") + "\n", "utf-8");
+}
+
 function writeErrorLogIfNeeded(today, nowLabel) {
   if (FAILURES.length === 0) return;
-  const logPath = path.join(ROOT, `Error_log_${today}.txt`);
   const lines = [];
   lines.push(`[${nowLabel}] 요율 자동 확인 중 문제 발견`);
   for (const f of FAILURES) {
@@ -618,7 +645,33 @@ function writeErrorLogIfNeeded(today, nowLabel) {
   lines.push("    scripts/check-rates.mjs의 정규식이나 data/rates.json의 source 링크를 확인해 손봐주세요.");
   lines.push("    (수정가이드.txt 참고)");
   lines.push("");
-  appendFileSync(logPath, lines.join("\n") + "\n", "utf-8");
+  writeLog("Error", today, lines);
+}
+
+function writeSuccessLog(today, nowLabel, changed) {
+  const lines = [];
+  lines.push(`[${nowLabel}] 요율 자동 확인 완료 - 문제 없음`);
+  lines.push(changed ? "  → 값이 바뀌어 자동 반영함 (data/rates.json 참고)" : "  → 변경 사항 없음");
+  lines.push("");
+  writeLog("Success", today, lines);
+}
+
+// 월 폴더(YYYY-MM) 단위로 보관하다가, LOG_RETENTION_MONTHS보다 오래된 폴더는
+// 실행할 때마다 자동으로 정리한다 (Error/Success 둘 다 대상).
+function cleanupOldLogs(today) {
+  const cutoff = new Date(`${today}T00:00:00Z`);
+  cutoff.setUTCMonth(cutoff.getUTCMonth() - LOG_RETENTION_MONTHS);
+  const cutoffLabel = cutoff.toISOString().slice(0, 7);
+
+  for (const kind of ["Error", "Success"]) {
+    const dir = path.join(LOG_ROOT, kind);
+    if (!existsSync(dir)) continue;
+    for (const entry of readdirSync(dir)) {
+      if (/^\d{4}-\d{2}$/.test(entry) && entry < cutoffLabel) {
+        rmSync(path.join(dir, entry), { recursive: true, force: true });
+      }
+    }
+  }
 }
 
 async function main() {
@@ -643,6 +696,8 @@ async function main() {
   }
 
   writeErrorLogIfNeeded(today, nowLabel);
+  if (FAILURES.length === 0) writeSuccessLog(today, nowLabel, changed);
+  cleanupOldLogs(today);
 
   const lines = [];
   lines.push(`# 요율 확인 결과 (${nowLabel})`);
@@ -657,7 +712,7 @@ async function main() {
   }
   if (FAILURES.length) {
     lines.push("");
-    lines.push(`## 문제 발생 (Error_log_${today}.txt 에 기록됨)`);
+    lines.push(`## 문제 발생 (Log/Error/${monthFolder(today)}/Error_log_${today}.txt 에 기록됨)`);
     for (const f of FAILURES) lines.push(`- ${f.field}: ${f.reason}`);
   }
   const summary = lines.join("\n") + "\n";

@@ -1,0 +1,38 @@
+name: 세율 확인 데스크탑 스케줄러 워치독
+
+# 2026-09-14부터 요율 확인은 GitHub Actions가 아니라 데스크탑 작업
+# 스케줄러(SmileMaskL-CheckRates, 하루 3번)가 대신 실행하고 그 결과를
+# 이 저장소에 직접 커밋한다(check-rates.yml 상단 주석 참고). 그런데
+# check-rates.mjs가 "변경도 없고 실패도 없으면" 아무 흔적도 안 남기던
+# 예전 버전에서는, 데스크탑 스케줄러가 아예 멈춰도 알아챌 방법이 없었다.
+#
+# 이제는 실행할 때마다 Log/Success 또는 Log/Error에 반드시 기록을 남기므로,
+# 이 워치독은 하루 한 번 "최근 24시간 안에 Log/에 새 파일이 있었는가"만
+# 확인한다. 없으면 이 워크플로 자체를 실패시키고, GitHub이 기본 설정으로
+# 저장소 소유자에게 실패 이메일을 자동으로 보낸다(추가 설정 불필요) —
+# 즉 "데스크탑 스케줄러가 멈춘 것 같다"는 알림 역할을 한다.
+
+on:
+  schedule:
+    - cron: "0 12 * * *" # 매일 UTC 12:00 (KST 21:00) 한 번 확인
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  check-freshness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v4
+
+      - name: 최근 24시간 안에 Log 기록이 있는지 확인
+        run: |
+          latest=$(find Log -type f -name '*.txt' -newermt '24 hours ago' 2>/dev/null | head -1)
+          if [ -z "$latest" ]; then
+            echo "::error::최근 24시간 동안 Log/Success, Log/Error에 새 기록이 없습니다. 데스크탑 작업 스케줄러(SmileMaskL-CheckRates)가 멈췄을 수 있습니다 — 데스크탑에서 작업 스케줄러 상태를 확인해주세요."
+            exit 1
+          fi
+          echo "정상: 최근 24시간 안에 기록됨 → $latest"
