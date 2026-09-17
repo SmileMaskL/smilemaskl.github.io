@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head><title>Threads Auth Callback</title></head>
+<body>
+  <h2>인증 완료</h2>
+  <p>아래 code 값을 복사하세요:</p>
+  <p id="code" style="word-break:break-all; font-size:18px; color:red;"></p>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    document.getElementById('code').textContent = params.get('code') || '(code 없음)';
+  </script>
+</body>
+</html>
