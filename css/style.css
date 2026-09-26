@@ -869,3 +869,10 @@ footer a {
   main { padding: 0; max-width: 100%; }
   .card { box-shadow: none; border: none; max-width: 100%; }
 }
+
+/* 계산기 하단 설명 글 */
+.guide-article { max-width: 760px; margin: 28px auto; padding: 0 4px; text-align: left; line-height: 1.75; }
+.guide-article h2 { font-size: 1.25rem; margin: 0 0 12px; }
+.guide-article h3 { font-size: 1.05rem; margin: 20px 0 8px; }
+.guide-article ul, .guide-article ol { padding-left: 1.3em; }
+.guide-article li { margin: 6px 0; }

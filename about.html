@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>사이트 소개 - SmileMaskL의 계산기</title>
+<meta name="description" content="SmileMaskL의 계산기가 어떤 사이트인지, 계산 근거와 데이터 관리 방식, 문의 방법을 안내합니다." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%AE%3C/text%3E%3C/svg%3E" />
+<link rel="canonical" href="https://smilemaskl.github.io/about.html" />
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#2563eb" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<link rel="stylesheet" href="css/style.css" />
+<script>
+  try { if (localStorage.getItem("theme") === "dark") document.documentElement.setAttribute("data-theme", "dark"); } catch (e) {}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="index.html"><span class="logo-mark">🧮</span>SmileMaskL의 계산기</a>
+    <nav>
+      <a href="index.html">🏡 Main</a>
+    </nav>
+    <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()" aria-label="다크모드 전환">🌙</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>사이트 소개</h1>
+    <p>무엇을, 어떤 근거로, 어떻게 관리하는지 안내합니다</p>
+  </div>
+</section>
+
+<main>
+  <div class="card" style="max-width: 760px; text-align: left;">
+    <h3>운영 목적</h3>
+    <p>SmileMaskL의 계산기는 연봉 실수령액, 퇴직금, 육아휴직급여, 재산세처럼 생활과 직결되지만 계산 방식이 복잡한 항목을 누구나 쉽게 확인할 수 있도록 만든 무료 계산기 모음입니다. 회원가입이 필요 없고, 입력한 값은 서버로 전송되지 않고 이용자의 브라우저 안에서만 계산됩니다.</p>
+
+    <h3>계산 근거</h3>
+    <ul>
+      <li><strong>연봉 실수령액</strong>: 4대보험 근로자 부담 요율과 종합소득세 기본세율에 근로소득공제·세액공제를 반영한 간이 추정</li>
+      <li><strong>퇴직금</strong>: 근로기준법 제34조, 근로자퇴직급여 보장법 제8조, 근로기준법 시행령 제2조의 평균임금 산정 방식</li>
+      <li><strong>육아휴직급여</strong>: 고용보험법 제70조와 같은 법 시행령 제95조의 지급률·상한액·하한액</li>
+      <li><strong>재산세</strong>: 지방세법 제111조 세율표, 지방세특례제한법의 1세대 1주택 특례세율, 공정시장가액비율</li>
+    </ul>
+    <p>각 계산기 페이지 하단의 "계산 근거 보기"에서 같은 내용을 확인할 수 있습니다.</p>
+
+    <h3>데이터 갱신과 점검</h3>
+    <p>해마다 바뀌는 4대보험 요율은 공식 고시 페이지를 하루 세 번 자동으로 확인해 계산식에 반영합니다. 확인이 실패하거나 갱신이 멈추면 운영자에게 알림이 전달됩니다. 법령이나 기준이 바뀌었다는 소식이 있으면 최신 고시와 대조해 수정합니다.</p>
+
+    <h3>한계와 면책</h3>
+    <p>모든 계산 결과는 참고용 추정치이며 법적 효력이 없습니다. 실제 급여, 퇴직금, 급여 지급액, 세액은 회사의 원천징수, 고용센터 심사, 지자체 고지서에 따라 달라질 수 있으므로 중요한 결정 전에는 해당 기관이나 전문가에게 확인하세요.</p>
+
+    <h3>광고와 제휴</h3>
+    <p>사이트 운영비는 Google 애드센스 광고와 쿠팡 파트너스 활동의 수수료로 충당합니다. 광고는 계산 결과와 무관하게 게재되며, 결과 값에 영향을 주지 않습니다. 자세한 내용은 <a href="privacy.html">개인정보처리방침</a>을 참고하세요.</p>
+
+    <h3>오류 제보와 문의</h3>
+    <p>계산 결과가 이상하거나 최신 기준과 다른 부분을 발견하면 <a href="https://github.com/SmileMaskL/smilemaskl.github.io/issues" target="_blank" rel="noopener">GitHub 이슈</a>로 알려주세요. 확인 후 반영합니다.</p>
+  </div>
+</main>
+
+<footer>
+  &copy; 2026 SmileMaskL의 계산기. 본 계산 결과는 참고용이며 법적 효력이 없습니다.
+  <a href="about.html">소개</a> · <a href="privacy.html">개인정보처리방침</a>
+</footer>
+
+<script src="js/common.js"></script>
+</body>
+</html>
