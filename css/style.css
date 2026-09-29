@@ -249,6 +249,24 @@ main {
   box-shadow: var(--shadow-sm);
 }
 
+.example-figure {
+  max-width: 640px;
+  margin: 0 auto 20px;
+}
+.example-figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+.example-figure figcaption {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--text-sub);
+  text-align: center;
+}
+
 .card-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
